@@ -1,4 +1,4 @@
-# WBITT Network-Multitool (Formerly `praqma/Network-MultiTool`)
+# Network-Multitool (Formerly `praqma/Network-MultiTool`)
 
 A (**multi-arch**) multitool for container/network testing and troubleshooting. The main docker image is based on Alpine Linux. There is a Fedora variant to be used in environments which require the image to be based only on RedHat Linux, or any of it's derivatives.
 
@@ -7,12 +7,12 @@ The container image contains lots of tools, as well as a `nginx` web server, whi
 ## Note about name/org change:
 Earlier, I created and maintained this tool with [Henrik](https://github.com/hoeghh), as `praqma/network-multitool`. Praqma was bought by another company, and now the **"Praqma"** brand is being dismantled. This means the network-multitool's git and docker repositories must go. It was decided by the current representatives of the company to hand it over to me so I can continue maintaining it. So, apart from a small change in the repository name, nothing has changed. 
 
-The docker repository to pull this image is now: [https://hub.docker.com/r/wbitt/network-multitool](https://hub.docker.com/r/wbitt/network-multitool)
+The docker repository to pull this image is now: [https://hub.docker.com/r/modem7/network-multitool](https://hub.docker.com/r/modem7/network-multitool)
 
 Or:
 
 ```
-docker pull wbitt/network-multitool
+docker pull modem7/network-multitool
 ```
 
 
@@ -109,7 +109,7 @@ All tools from "minimal", plus:
 
 ### Docker:
 ```
-$ docker run  -d wbitt/network-multitool
+$ docker run  -d modem7/network-multitool
 ```
 
 Then:
@@ -119,32 +119,12 @@ $ docker exec -it container-name /bin/bash
 ```
 
 
-### Kubernetes:
-
-Create single pod - without a deployment:
-```
-$ kubectl run multitool --image=wbitt/network-multitool
-```
-
-Create a deployment:
-```
-$ kubectl create deployment multitool --image=wbitt/network-multitool
-```
-
-Then:
-```
-$ kubectl exec -it pod-name /bin/bash
-```
-
-**Note:** You can pass additional parameter `--namespace=<your-desired-namespace>` to the above kubectl commands.
-
-
 ### Openshift:
 
 ```
 $ oc new-project test-project-1
 
-$ oc new-app wbitt/network-multitool:openshift --name multitool-openshift
+$ oc new-app modem7/network-multitool:openshift --name multitool-openshift
 
 $ oc status
 
@@ -165,13 +145,13 @@ Sometimes you want to do testing using the **host network**.  This can be achiev
 
 ### Docker:
 ```
-$ docker run --network host -d wbitt/network-multitool
+$ docker run --network host -d modem7/network-multitool
 ```
 
 **Note:** If port 80 and/or 443 are already busy on the host, then use pass the extra arguments to multitool, so it can listen on a different port, as shown below:
 
 ```
-$ docker run --network host -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -d wbitt/network-multitool
+$ docker run --network host -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -d modem7/network-multitool
 ```
 
 ### Kubernetes:
@@ -219,12 +199,12 @@ Well, normally, if a container does not run a daemon/service, then running it (t
 
 This helps you when you are using Docker. You simply execute:
 ```
-$ docker run  -d wbitt/network-multitool
+$ docker run  -d modem7/network-multitool
 ```
 
 This also helps when you are using kubernetes. You simply execute:
 ```
-$ kubectl run multitool --image=wbitt/network-multitool
+$ kubectl run multitool --image=modem7/network-multitool
 ```
 
 
