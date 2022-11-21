@@ -12,7 +12,7 @@ RUN     yum -y install \
             bind-utils cpio diffutils findutils git gzip jq \
             iproute iputils logstash mariadb mtr mutt net-tools nginx \
             openssh-clients openldap openldap-clients openssl \
-            postfix postgresql procps-ng tcpdump td-agent-bit telnet traceroute vim-minimal wget
+            postfix postgresql procps-ng tcpdump fluent-bit telnet traceroute vim-minimal wget
 
 RUN     curl -sLO https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.12.0-x86_64.rpm \
     &&  curl -sLO https://download.oracle.com/otn_software/linux/instantclient/211000/oracle-instantclient-basiclite-21.1.0.0.0-1.x86_64.rpm \
