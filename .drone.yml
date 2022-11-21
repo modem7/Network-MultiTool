@@ -49,8 +49,8 @@ steps:
     DOCKER_PASS:
       from_secret: docker_password
     PUSHRM_FILE: README.md
-    PUSHRM_SHORT: Repack of Grafana with the usual Homecentr bells and whistles.
-    PUSHRM_TARGET: ${DRONE_REPO}
+    PUSHRM_SHORT: Alpine based multi-arch multi-tool for container network troubleshooting.
+    PUSHRM_TARGET: modem7/network-multitool
   when:
     status:
       - success
