@@ -1,3 +1,5 @@
+# syntax = docker/dockerfile:latest
+
 FROM alpine:3.17
 
 MAINTAINER Kamran Azeem & Henrik Høegh (kamranazeem@gmail.com, henrikrhoegh@gmail.com )
