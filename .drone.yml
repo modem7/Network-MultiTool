@@ -16,7 +16,7 @@ steps:
       && DIFF_STRING=origin/${DRONE_COMMIT_BRANCH:-master}
       || DIFF_STRING=${DRONE_COMMIT_SHA}~
     - git --no-pager diff --name-only $DIFF_STRING
-      | grep -q -e ^[.]drone[.]
+      | grep -q -e ^Dockerfile
       || exit 78
 
 - name: Build 
