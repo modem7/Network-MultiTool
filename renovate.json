@@ -5,4 +5,5 @@
   "labels": ["dependencies"],
   "includeForks": "true",
   "timezone": ["Europe/London"]
+  "baseBranches": ["master", "openshift", "openshift-extra", "fedora-es-db-tools", "fedora", "alpine-extra"]
 }
