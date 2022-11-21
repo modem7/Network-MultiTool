@@ -2,7 +2,7 @@
 
 kind: pipeline
 type: docker
-name: latest
+name: Network-Multitool-Alpine
 
 platform:
   os: linux
@@ -19,24 +19,17 @@ steps:
       | grep -q -e ^[.]drone[.]
       || exit 78
 
-- name: Lint Dockerfile
-  image: hadolint/hadolint:latest-alpine
-  pull: if-not-exists
-  commands:
-    - hadolint --version
-    - hadolint Dockerfile*
-
-- name: Latest  
+- name: Build 
   image: thegeeklab/drone-docker-buildx
   privileged: true
   settings:
-    repo: ${DRONE_REPO}
+    repo: modem7/network-multitool
     purge: true
     compress: true
     use_cache: true
     build_args: BUILDKIT_INLINE_CACHE=1
     cache_from: 
-      - ${DRONE_REPO}:alpine-minimal
+      - modem7/network-multitool:alpine-minimal
     platforms: # if it doesn't work run docker run --privileged --rm tonistiigi/binfmt --install all
       - linux/amd64
       - linux/arm64
@@ -56,8 +49,8 @@ steps:
     DOCKER_PASS:
       from_secret: docker_password
     PUSHRM_FILE: README.md
-    PUSHRM_SHORT: Repack of Grafana with the usual Homecentr bells and whistles.
-    PUSHRM_TARGET: ${DRONE_REPO}
+    PUSHRM_SHORT: Alpine based multi-arch multi-tool for container network troubleshooting.
+    PUSHRM_TARGET: modem7/network-multitool
   when:
     status:
       - success
