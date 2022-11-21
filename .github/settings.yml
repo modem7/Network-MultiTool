@@ -4,7 +4,7 @@
 repository:
   #name: NewRepo
   description: CMulti-arch multitool for container network troubleshooting.
-  homepage: https://modem7.com
+  homepage: https://hub.docker.com/r/modem7/network-multitool
   topics: docker, network, mutitool, troubleshooting, debug
 
   private: false

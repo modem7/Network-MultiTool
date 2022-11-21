@@ -17,13 +17,11 @@ docker pull wbitt/network-multitool
 
 
 ## Supported platforms: 
-* linux/386
 * linux/amd64
-* linux/arm/v7
 * linux/arm64
 
 ## Downloadable from Docker Hub: 
-* [https://hub.docker.com/r/wbitt/network-multitool](https://hub.docker.com/r/wbitt/network-multitool)  (An automated multi-arch build)
+* [https://hub.docker.com/r/modem7/network-multitool](https://hub.docker.com/r/modem7/network-multitool)  (An automated multi-arch build)
 
 ## Variants / image tags:
 * **latest**, minimal, alpine-minimal ( The main/default **'minimal'** image - Alpine based )
