@@ -19,7 +19,7 @@ steps:
       | grep -q -e ^[.]drone[.]
       || exit 78
 
-- name: Alpine-Openshift
+- name: Build
   image: thegeeklab/drone-docker-buildx
   privileged: true
   settings:
