@@ -1,11 +1,8 @@
-# Network-Multitool (Formerly `praqma/Network-MultiTool`)
+# Network-Multitool
 
 A (**multi-arch**) multitool for container/network testing and troubleshooting. The main docker image is based on Alpine Linux. There is a Fedora variant to be used in environments which require the image to be based only on RedHat Linux, or any of it's derivatives.
 
 The container image contains lots of tools, as well as a `nginx` web server, which listens on port `80` and `443` by default. The web server helps to run this container-image in a straight-forward way, so you can simply `exec` into the container and use various tools.
-
-## Note about name/org change:
-Earlier, I created and maintained this tool with [Henrik](https://github.com/hoeghh), as `praqma/network-multitool`. Praqma was bought by another company, and now the **"Praqma"** brand is being dismantled. This means the network-multitool's git and docker repositories must go. It was decided by the current representatives of the company to hand it over to me so I can continue maintaining it. So, apart from a small change in the repository name, nothing has changed. 
 
 The docker repository to pull this image is now: [https://hub.docker.com/r/modem7/network-multitool](https://hub.docker.com/r/modem7/network-multitool)
 
@@ -15,7 +12,6 @@ Or:
 docker pull modem7/network-multitool
 ```
 
-
 ## Supported platforms: 
 * linux/amd64
 * linux/arm64
@@ -24,32 +20,12 @@ docker pull modem7/network-multitool
 * [https://hub.docker.com/r/modem7/network-multitool](https://hub.docker.com/r/modem7/network-multitool)  (An automated multi-arch build)
 
 ## Variants / image tags:
-* **latest**, minimal, alpine-minimal ( The main/default **'minimal'** image - Alpine based )
-* extra, alpine-extra (Alpine based image - with **extra tools** )
-* openshift , openshift-minimal (openshift compatible - **minimal**) - Ports: **1180, 11443**
-* openshift-extra (openshift compatible with **extra tools**) - Ports: **1180, 11443**
-* fedora, fedora-minimal ( **'Minimal'** Fedora based image )
-
-
-### Important notes about openshift variant:
-Openshift is very strict about how a container image should run. So, the **openshift variant** of the multitool has the following limitations / changes:
-
-* Runs as non-root ; which means some tools (e.g. `traceroute`, `tcptraceroute`, etc, will not work)
-* Listens on ports `1180` and `11443` - **not** `80` and `443`
-* Some executable files are manually set as `setuid`, so those tools remain usable. Tools set with `setuid` are: 
-  * apk 
-  * arping
-  * busybox
-  * mii-tool
-  * tcpdump
-  * tcptraceroute
-  * traceroute
-  * tshark
+* **latest**, alpine-minimal ( The main/default **'minimal'** image - Alpine based )
+* alpine-extra (Alpine based image - with **extra tools** )
 
 Remember, this *multitool* is purely a troubleshooting tool, and should be used as such. It is not designed to abuse openshift (or any system's) security, nor should it be used to do so.
- 
 
-## Tools included in "latest, minimal, alpine-minimal , openshift, openshift-minimal":
+## Tools included in "latest, alpine-minimal":
 * apk package manager
 * Nginx Web Server (port `80`, port `443`) - with customizable ports!
 * awk, cut, diff, find, grep, sed, vi editor, wc
@@ -67,7 +43,7 @@ Remember, this *multitool* is purely a troubleshooting tool, and should be used 
 
 **Size:** 16 MB compressed, 38 MB uncompressed
 
-## Tools included in "extra, alpine-extra, openshift-extra":
+## Tools included in "alpine-extra":
 All tools from "minimal", plus:
 * iperf3
 * ethtool, mii-tool, route
@@ -82,25 +58,6 @@ All tools from "minimal", plus:
 
 **Size:** 64 MB compressed, 220 MB uncompressed
 
-
-## Tools included in "fedora, fedora-minimal":
-* YUM package manager
-* Nginx Web Server (port 80, port 443) - customizable ports!
-* wget, curl
-* dig, nslookup
-* ip, ifconfig, route, traceroute, tracepath, mtr
-* ping, arp, arping
-* ps, netstat
-* gzip, cpio, tar
-* telnet client
-* awk, cut, diff, find, grep, sed, vi editor, wc
-* jq
-* `/bin/sh` shell interpreter - not `/bin/bash`
-
-**Size:** 72 MB uncompressed
-
-
-**Note:** The SSL certificates are generated for "localhost", are self signed, and placed in `/certs/` directory. During your testing, ignore the certificate warning/error. While using curl, you can use `-k` to ignore SSL certificate warnings/errors.
 
 ------
 
@@ -118,26 +75,6 @@ Then:
 $ docker exec -it container-name /bin/bash
 ```
 
-
-### Openshift:
-
-```
-$ oc new-project test-project-1
-
-$ oc new-app modem7/network-multitool:openshift --name multitool-openshift
-
-$ oc status
-
-$ oc get pods
-
-$ oc logs pod-name
-
-$ oc exec -it pod-name /bin/sh
-
-$ oc port-forward pod-name  1180:1180 11443:11443
-```
-
-
 ## How to use this image on **host network** ?
 
 Sometimes you want to do testing using the **host network**.  This can be achieved by running the multitool using host networking. 
@@ -153,18 +90,6 @@ $ docker run --network host -d modem7/network-multitool
 ```
 $ docker run --network host -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -d modem7/network-multitool
 ```
-
-### Kubernetes:
-For Kubernetes, there is YAML/manifest file `multitool-daemonset.yaml` in the `kubernetes` directory, that will run an instance of the multitool on all hosts in the cluster using host networking.
-
-```
-$ kubectl apply -f kubernetes/multitool-daemonset.yaml
-```
-
-**Notes:** 
-* You can pass additional parameter `--namespace=<your-desired-namespace>` to the above kubectl command.
-* Due to a possibility of something (some service) already listening on port 80 and 443 on the worker nodes, the `daemonset` is configured to run multitool on port `1180` and `11443`. You can change this in the YAML file if you want.
-
 
 # Configurable HTTP and HTTPS ports:
 There are times when one may want to join this (multitool) container to another container's IP namespace for troubleshooting, or on the host network. This is true for both Docker and Kubernetes platforms. During that time if the container in question is a web server (nginx, apache, etc), or a reverse-proxy (traefik, nginx, haproxy, etc), then network-multitool cannot join it in the same IP namespace on Docker, and similarly it cannot join the same pod on Kubernetes. This happens because network multitool also runs a web server on port 80 (and 443), and this results in port conflict on the same IP address. To help in this sort of troubleshooting, there are two environment variables **HTTP_PORT** and **HTTPS_PORT** , which you can use to provide the values of your choice instead of 80 and 443. When the container starts, it uses the values provided by you/user to listen for incoming connections. Below is an example:
@@ -202,29 +127,10 @@ This helps you when you are using Docker. You simply execute:
 $ docker run  -d modem7/network-multitool
 ```
 
-This also helps when you are using kubernetes. You simply execute:
-```
-$ kubectl run multitool --image=modem7/network-multitool
-```
-
-
 The multitool container starts as web server - so it remains `UP`. Then, you simply connect to it using:
 ```
 $ docker exec -it some-silly-container-name /bin/sh 
 ```
-
-Or, on Kubernetes:
-```
-$ kubectl exec -it multitool-3822887632-pwlr1  -- /bin/sh
-```
-
-This is why it is good to have a web-server in this tool. Hope this answers the question! Besides, I believe that having a web server in a multitool is like having yet another tool! Personally, I think this is cool! [Henrik](https://www.linkedin.com/in/henrikrenehoegh/) thinks the same!
-
-
-## I can't find a tool I need for my use-case?
-We have tried to put in all the most commonly used tools, while keeping it small and practical. We can't have all the tools under the sun, otherwise it will end up as [something like this](https://www.amazon.ca/Wenger-16999-Swiss-Knife-Giant/dp/B001DZTJRQ).  
-
-However, if you have a special need, for a special tool, for your special use-case, then I would recommend to simply build your own docker image using this one as base image, and expanding it with the tools you need.
 
 ## Why not use LetsEncrypt for SSL certificates instead of generating your own?
 There is absolutely no need to use LetsEncrypt. This is a testing tool, and validity of SSL certificates does not matter.
@@ -238,8 +144,4 @@ One could argue that it is possible to simply install the tools on the hosts and
 * By using a `daemonset`, it makes it easier to integrate with other resources. e.g. Use volumes for packet capture files, etc.
 * Using the `daemonset` provides a *'cloud native'* approach to provision debugging/testing tools.
 * You can `exec` into the `daemonset`, without needing to SSH into the node.
-
-
-## How to contribute to this project?
-Contributions are welcome for packages/tools considered **"absolutely necessary"**, of **"core"** nature, are **"minimal"** in size, and **"have large number of use-cases"**. Remember, the goal is not to create yet another Linux distribution! :)
 
