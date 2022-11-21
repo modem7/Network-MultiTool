@@ -2,7 +2,7 @@
 
 kind: pipeline
 type: docker
-name: latest
+name: Network-Multitool-Alpine
 
 platform:
   os: linux
@@ -19,7 +19,7 @@ steps:
       | grep -q -e ^[.]drone[.]
       || exit 78
 
-- name: Latest  
+- name: Alpine-Minimal  
   image: thegeeklab/drone-docker-buildx
   privileged: true
   settings:
@@ -66,6 +66,65 @@ steps:
 trigger:
   branch:
     - master
+  event:
+    include:
+    - push
+    - custom
+
+---
+
+kind: pipeline
+type: docker
+name: Network-Multitool-Openshift
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: Trigger
+  image: plugins/git
+  commands:
+    - test $DRONE_BUILD_EVENT = pull_request
+      && DIFF_STRING=origin/${DRONE_COMMIT_BRANCH:-openshift}
+      || DIFF_STRING=${DRONE_COMMIT_SHA}~
+    - git --no-pager diff --name-only $DIFF_STRING
+      | grep -q -e ^[.]drone[.]
+      || exit 78
+
+- name: Alpine-Openshift
+  image: thegeeklab/drone-docker-buildx
+  privileged: true
+  settings:
+    repo: modem7/network-multitool
+    purge: true
+    compress: true
+    use_cache: true
+    build_args: BUILDKIT_INLINE_CACHE=1
+    cache_from: 
+      - modem7/network-multitool:openshift
+    platforms: # if it doesn't work run docker run --privileged --rm tonistiigi/binfmt --install all
+      - linux/amd64
+      - linux/arm64
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - latest
+      - openshift
+
+- name: slack
+  image: themaz/drone-slack
+  settings:
+    webhook:
+      from_secret: slack_hook
+  when:
+    status: [ success, failure ]
+
+trigger:
+  branch:
+    - openshift
   event:
     include:
     - push
